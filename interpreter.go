@@ -19,7 +19,6 @@ package main
 import (
     "container/list"
 	"errors"
-	"fmt"
     "io/ioutil"
 	"os"
     "strconv"
@@ -27,13 +26,10 @@ import (
 func main() {
 
 //Constants for the interpreter
-	//TODO: change these through command line flags
 	//The size of the memory space
-	const MEMORY_SIZE int = 1024
+	const MEMORY_SIZE int = 16384
 //VM variables:
 	//The data space
-	//TODO: allow the option of a dynamic array
-	//TODO: configure this through command line flags
 	var memory [MEMORY_SIZE]byte
 	//The data pointer
 	var dataPointer int = 0
@@ -84,7 +80,6 @@ func main() {
         }
 
     }
-    fmt.Println()
     if loopStack.Len() > 0 {
         panic(errors.New("Unmatched '[' at position " + strconv.Itoa(loopStack.Back().Value.(int))))
     }
@@ -95,11 +90,15 @@ func main() {
             //Move current position forward
             case '>':
                 dataPointer = dataPointer + 1
-                //TODO:bounds checking
+                if dataPointer == len(program) {
+                    panic(errors.New("Error: Memory went out of bounds at position " + strconv.Itoa(instructionPointer)))
+                }
             //Move current position backward
             case '<':
                 dataPointer = dataPointer - 1
-                //TODO:bounds checking
+                if dataPointer == -1 {
+                    panic(errors.New("Error: Memory went out of bounds at position " + strconv.Itoa(instructionPointer)))
+                }
             //Increment memory at at the current position in memory
             case '+':
                 memory[dataPointer] = memory[dataPointer] + 1

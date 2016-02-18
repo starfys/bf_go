@@ -1,2 +1,2 @@
-# brainfuck_go
-Brainfuck interpreter written in GO
+# bf_go
+BF interpreter written in GO
